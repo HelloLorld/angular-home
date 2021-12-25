@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Список студентов</title>
+</head>
+<body>
+<div class="container">
+  <div class="main">
+    <div>
+      <label>Поиск студента:</label><br>
+      <input type="text" [(ngModel)]="search"/>
+    </div>
+    <div>
+      <label>Дата рождения в диапазоне:</label><br>
+      <input type="date" value="{{beg | date: 'yyyy-MM-dd'}}" [(ngModel)]="beg"/>
+      <input type="date" id="end" value="{{end | date: 'yyyy-MM-dd'}}" [(ngModel)]="end"/>
+    </div>
+    <div>
+      <label>Оценки в диапазоне:</label><br>
+      <input class="avg" type="number" [(ngModel)]="begAvg"/>
+      <input class="avg" type="number" [(ngModel)]="endAvg"/>
+    </div>
+    <button (click)="sortOnOff()" *ngIf="!sortFlag">Включить сортировки</button>
+    <button (click)="sortOnOff()" *ngIf="sortFlag">Выключить сортировки</button>
+  </div>
+  <div class="main">
+    <table>
+      <tr>
+        <td>№</td>
+        <td>
+          <button (click)="sortByFullName()">ФИО</button>
+        </td>
+        <td>
+          <button (click)="sortByDateOfBirth()">Дата рождения</button>
+        </td>
+        <td>
+          <button (click)="sortByAvgMark()">Средний балл</button>
+        </td>
+        <td></td>
+      </tr>
+      <tr
+        *ngFor="let student of (sortFlag ? (students | search: begAvg:endAvg | dateFilter: beg : end) : students); let i = index"
+        [ngClass]="{yellow : find(student)}">
+        <td>{{i + 1}}</td>
+        <td><p class="fullName">{{student.fullName}}</p></td>
+        <td>{{student.getDateOfBirth()}}</td>
+        <td>{{student.avgMark}}</td>
+        <td>
+          <button (click)="deleteStudent(i)">Удалить</button>
+        </td>
+      </tr>
+    </table>
+  <div>
+    <form novalidate #form="ngForm">
+      <p>Что вы хотите сделать?</p>
+      <button (click)="addOrChange()" [disabled]="addingForm">Изменить студента</button>
+      <button (click)="addOrChange()" [disabled]="!addingForm">Добавить студента</button>
+      <div *ngIf="addingForm">
+        <label>Номер студента</label><br>
+        <input type="number" name="index" id="index" [(ngModel)]="studentForm.index"/>
+      </div>
+      <div ngModelGroup="fullName" #fullName="ngModelGroup">
+        <div>
+          <label for="firstName">Имя</label><br>
+          <input type="text" name="firstName" id="firstName" [(ngModel)]="studentForm.firstName" required
+                 #firstName="ngModel"/>
+        </div>
+        <div>
+          <label for="lastName">Фамилия</label><br>
+          <input type="text" name="lastName" id="lastName" [(ngModel)]="studentForm.lastName" required
+                 #lastName="ngModel"/>
+        </div>
+        <div>
+          <label for="patronymic">Отчество</label><br>
+          <input type="text" name="patronymic" id="patronymic" [(ngModel)]="studentForm.patronymic" required
+                 #patronymic="ngModel"/>
+        </div>
+        <span *ngIf="fullName.invalid">Введите корректное ФИО</span>
+      </div>
+      <div>
+        <label for="dateOfBirth">Дата рождения</label><br>
+        <input type="date" name="dateOfBirth" id="dateOfBirth" [(ngModel)]="studentForm.dateOfBirth" required
+               #dateOfBirth="ngModel"/><br>
+        <span *ngIf="!checkDateOfBirth()">Диапазон дат: 01.01.1990 и 31.12.2004</span>
+      </div>
+      <div>
+        <label for="avgMark">Средний балл</label><br>
+        <input type="number" min="2" max="5" name="avgMark" id="avgMark" [(ngModel)]="studentForm.avgMark" required
+               #avgMark="ngModel"/><br>
+        <span *ngIf="!checkAvgMark()">Средний балл должен находиться между 2 и 5</span>
+      </div>
+      <button *ngIf="!addingForm" (click)="addStudent()"
+              [disabled]="form.invalid || !checkAvgMark() || !checkDateOfBirth()">Отправить
+      </button>
+
+      <button *ngIf="addingForm" (click)="changeStudent()" [disabled]="form.invalid || !checkAvgMark()
+   || !checkDateOfBirth() || !checkIndex()">Изменить студента
+      </button>
+      <br>
+      <span *ngIf="form.invalid">Все поля обязательны к заполнению</span><br>
+    </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

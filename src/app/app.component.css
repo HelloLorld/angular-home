@@ -1,0 +1,40 @@
+table {
+  text-align: center;
+  padding: 5px;
+}
+
+.fullName {
+  text-align: left;
+}
+
+form {
+  float: right;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+span {
+  color: red;
+}
+
+.avg {
+  width: 60px;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.main {
+  display: flex;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.main > div {
+  margin-left: auto;
+  margin-right: auto;
+}
